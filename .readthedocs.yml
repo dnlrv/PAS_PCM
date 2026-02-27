@@ -1,22 +1,25 @@
+# .readthedocs.yml
 # Read the Docs configuration file
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
 
-# Required
 version: 2
 
-# Set the OS, Python version, and other tools you might need
 build:
-  os: ubuntu-24.04
+  os: ubuntu-22.04
   tools:
-    python: "3.13"
+    python: "3.11"
+  jobs:
+    # Run a PowerShell script to generate Markdown files from your module
+    # Note: Ubuntu environments on ReadTheDocs usually have pwsh pre-installed,
+    # or you can download it in a pre_install step if needed.
+    pre_build:
+      - pwsh -Command "& ./docs/Generate-Docs.ps1"
 
-# Build documentation in the "docs/" directory with Sphinx
-sphinx:
-   configuration: docs/conf.py
+# We are using MkDocs to build the site from the generated Markdown
+mkdocs:
+  configuration: mkdocs.yml
 
-# Optionally, but recommended,
-# declare the Python requirements required to build your documentation
-# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
-# python:
-#    install:
-#    - requirements: docs/requirements.txt
+python:
+  install:
+    # Install MkDocs and any themes (like mkdocs-material) via pip
+    - requirements: docs/requirements.txt
